@@ -15,11 +15,22 @@ xfs_growfs /var/tmp
 xfs_growfs /var
 
 
+# Install required tools
+sudo dnf install -y curl java-17-openjdk fontconfig
 
-curl -o /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-yum install fontconfig java-17-openjdk jenkins -y
-yum install jenkins -y
-ystemctl daemon-reload
-systemctl enable jenkins
-systemctl start jenkins
+# Add Jenkins repository
+sudo curl -L https://pkg.jenkins.io/redhat-stable/jenkins.repo \
+-o /etc/yum.repos.d/jenkins.repo
+
+# Import Jenkins key
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+# Install Jenkins
+sudo dnf install -y jenkins
+
+# Reload systemd
+sudo systemctl daemon-reload
+
+# Enable & Start Jenkins
+sudo systemctl enable jenkins
+sudo systemctl start jenkins

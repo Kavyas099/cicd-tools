@@ -1,5 +1,3 @@
-
-
 data "aws_ami" "kavya" {
  
     most_recent      = true
