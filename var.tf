@@ -1,9 +1,3 @@
-variable "zone" {
-   type        = string
-  default     = "koti.lat "
-  description = "description"
-}
-
 
 
 variable "instances" {
@@ -12,3 +6,13 @@ variable "instances" {
     jenkins-agent  = "jenkins-agent.sh"
   }
 }
+
+variable "zone_id" {
+  default =  "Z04757596NZDGVB9VM0A"
+
+}
+
+variable "domain_name" {
+    default = "koti.lat"
+}
+  

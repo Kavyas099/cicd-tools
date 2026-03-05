@@ -1,36 +1,23 @@
-#!/bin/bash
+ #!/bin/bash
+ sudo growpart /dev/nvme0n1 4
 
-#resize disk from 20GB to 50GB
+ sudo lvextend -L +10G /dev/mapper/RootVG-homeVol
+ sudo lvextend -L +10G /dev/mapper/RootVG-varVol
+ sudo lvextend -l +100%FREE /dev/mapper/RootVG-varTmpVol
 
-sudo growpart /dev/nvme0n1 4
- sudo pvresize /dev/nvme0n1p4
-sudo vgdisplay RootVG
- sudo lvextend -l +100%FREE /dev/RootVG/rootVol
-sudo xfs_growfs /
-
-
-
-xfs_growfs /home
-xfs_growfs /var/tmp
-xfs_growfs /var
+ sudo xfs_growfs /home
+ sudo xfs_growfs /var/tmp
+ sudo xfs_growfs /var
 
 
-# Install required tools
-sudo dnf install -y curl java-17-openjdk fontconfig
+sudo curl -L -o /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
 
-# Add Jenkins repository
-sudo curl -L https://pkg.jenkins.io/redhat-stable/jenkins.repo \
--o /etc/yum.repos.d/jenkins.repo
-
-# Import Jenkins key
 sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum install fontconfig java-17-openjdk jenkins -y
 
-# Install Jenkins
-sudo dnf install -y jenkins
-
-# Reload systemd
+sudo yum install -y jenkins
 sudo systemctl daemon-reload
-
-# Enable & Start Jenkins
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
+sudo systemctl status jenkins

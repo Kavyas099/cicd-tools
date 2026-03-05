@@ -2,7 +2,7 @@ resource "aws_instance" "jenkins_master" {
     
   ami           = data.aws_ami.kavya.id
   
-  instance_type = "t3.micro"
+  instance_type = "t3.medium"
   
   root_block_device {
     volume_size = 50
@@ -30,7 +30,7 @@ resource "aws_instance" "jenkins_agent" {
 
   user_data = file("${path.module}/jenkins-agent.sh")
 
-  vpc_security_group_ids = [aws_security_group.jenkins_master_sg_id.id]
+  vpc_security_group_ids = [aws_security_group.jenkins_agent_sg.id]
 
   tags = {
     Name = "jenkins-agent"
@@ -93,10 +93,23 @@ resource "aws_security_group" "jenkins_agent_sg" {
   }
 }
 
-output "jenkins_agent" {
+
+
+output "jenkins_master" {
   value = aws_instance.jenkins_master.public_ip
 }
 
-output "jenkins_master" {
+output "jenkins_agent" {
   value = aws_instance.jenkins_agent.public_ip
+}
+
+
+
+
+resource "aws_route53_record" "jenkins_master" {
+  zone_id = var.zone_id
+  name    = "${var.domain_name}"
+  type    = "A"
+  ttl     = 60
+  records  = [aws_instance.jenkins_master.public_ip]
 }
